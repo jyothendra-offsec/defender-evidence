@@ -41,3 +41,7 @@ python3 -m unittest discover -s tests -v
 ## Review workflow
 
 A test with an empty matches array should prompt a review of log collection, clock alignment and hostname spelling. Compare the original event details before assigning causation.
+
+## Usage terms
+
+Original material in this revision requires the owner's written permission for modification or redistribution. Earlier MIT releases and third-party licenses retain their terms. See [LICENSE](LICENSE).
