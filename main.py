@@ -14,9 +14,13 @@ def timestamp(value):
     return result
 
 
-def load(path):
+def load(path, required):
     with open(path, encoding="utf-8-sig", newline="") as stream:
-        return list(csv.DictReader(stream))
+        reader = csv.DictReader(stream)
+        missing = required - set(reader.fieldnames or ())
+        if missing:
+            raise ValueError(f"missing CSV columns: {', '.join(sorted(missing))}")
+        return list(reader)
 
 
 def correlate(tests, events, window):
@@ -42,9 +46,16 @@ def main():
     args = parser.parse_args()
     if args.minutes < 0:
         parser.error("--minutes must be nonnegative")
-    print(json.dumps(correlate(load(args.tests), load(args.events),
+    print(json.dumps(correlate(load(args.tests, {"test_id", "host", "timestamp"}),
+                               load(args.events, {"event_id", "host", "timestamp"}),
                                timedelta(minutes=args.minutes)), indent=2))
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (OSError, ValueError, TypeError, KeyError, AttributeError, IndexError, csv.Error) as exc:
+        import sys
+
+        print(f"Invalid input: {exc}", file=sys.stderr)
+        raise SystemExit(2) from None
