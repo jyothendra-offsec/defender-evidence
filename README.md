@@ -37,3 +37,7 @@ Hostnames are matched without regard to case. Use consistent short names or FQDN
 ```sh
 python3 -m unittest discover -s tests -v
 ```
+
+## Review workflow
+
+A test with an empty matches array should prompt a review of log collection, clock alignment and hostname spelling. Compare the original event details before assigning causation.
